@@ -27,6 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "<p><strong>Country:</strong> $country</p>";
     echo "<p><strong>Gender:</strong> $gender</p>";
     echo "<p><strong>Preferred Color:</strong> <span style='color:$colorPreference;'>$colorPreference</span></p>";
-    echo "<form><button onclick='history.back()'>Go Back</button></form>";
+    echo "<form><button onclick='history.back()'>confirm</button></form>";
 }
 ?>
