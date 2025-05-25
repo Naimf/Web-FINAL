@@ -1,9 +1,11 @@
 <?php
+session_start();  // Start the session
+
 // ==== DATABASE CONNECTION ====
 $servername = "localhost";
 $username = "root";
 $password = ""; // Update if your DB has a password
-$dbname = "your_database_name"; // Change this to your actual DB name
+$dbname = "aqi"; // Change this to your actual DB name
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
@@ -36,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        $stmt = $conn->prepare("INSERT INTO aqi (full_name, email, password, dob, country, gender, color_preference) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO user (full_name, email, password, dob, country, gender, color_preference) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssssss", $fullName, $email, $password, $dob, $country, $gender, $colorPreference);
 
         if ($stmt->execute()) {
@@ -47,7 +49,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<p><strong>Country:</strong> $country</p>";
             echo "<p><strong>Gender:</strong> $gender</p>";
             echo "<p><strong>Preferred Color:</strong> <span style='color:$colorPreference;'>$colorPreference</span></p>";
-            echo "<form><button onclick='history.back()'>Confirm</button></form>";
+            echo '<a href="index.php"><button type="button">Confirm</button></a>';
+
         } else {
             echo "<h2>Error: " . $stmt->error . "</h2>";
         }
@@ -60,19 +63,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST['loginEmail'];
         $password = $_POST['loginPassword'];
 
-        $stmt = $conn->prepare("SELECT password FROM aqi WHERE email = ?");
+        $stmt = $conn->prepare("SELECT full_name, password FROM user WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
 
         if ($stmt->num_rows == 1) {
-            $stmt->bind_result($storedPassword);
+            $stmt->bind_result($storedFullName, $storedPassword);
             $stmt->fetch();
 
+            // After password verification in login section of process.php:
             if ($password === $storedPassword) {
-                header("Location: showaqi.php");
-                exit;
-            } else {
+                // Fetch full user info including color_preference
+                $stmt2 = $conn->prepare("SELECT full_name, color_preference FROM user WHERE email = ?");
+                $stmt2->bind_param("s", $email);
+                $stmt2->execute();
+                $stmt2->bind_result($fullName, $colorPreference);
+                $stmt2->fetch();
+                $stmt2->close();
+
+                $_SESSION['email'] = $email;
+                $_SESSION['full_name'] = $fullName;
+                $_SESSION['color_preference'] = $colorPreference;
+
+                                if (isset($_SESSION['selected_cities']) && !empty($_SESSION['selected_cities'])) {
+                    header("Location: checkboxrequestedaqi.php");
+                    exit;
+                } else {
+                    header("Location: showaqi.php");  // your original city selection page (or index.php)
+                    exit;
+}
+            
+
+        } else {
                 echo "<h2>Incorrect password.</h2>";
             }
         } else {
@@ -81,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $stmt->close();
     }
-
-    $conn->close();
 }
+
+$conn->close();
 ?>
