@@ -1,10 +1,16 @@
 <?php
 session_start();
 
-// Set background color from session or default
 $bgColor = isset($_SESSION['color_preference']) ? $_SESSION['color_preference'] : '#ffffff';
 
-// Redirect if city selection is missing or invalid
+// --- NEW: Check cookie if session selected_cities not set or count != 10 ---
+if ((!isset($_SESSION['selected_cities']) || count($_SESSION['selected_cities']) !== 10) && isset($_COOKIE['preferred_cities'])) {
+    $cookieCities = json_decode($_COOKIE['preferred_cities'], true);
+    if (is_array($cookieCities) && count($cookieCities) === 10) {
+        $_SESSION['selected_cities'] = $cookieCities;
+    }
+}
+// --- END NEW ---
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cities'])) {
     $selected_ids = $_POST['cities'];
 
@@ -13,21 +19,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cities'])) {
     }
 
     $_SESSION['selected_cities'] = $selected_ids;
-} elseif (!isset($_SESSION['selected_cities']) || count($_SESSION['selected_cities']) !== 10) {
-    header("Location: showaqi.php");
-    exit;
+
+    // Set cookie with selected city IDs as comma separated string, expires in 30 days
+    setcookie('preferred_cities', implode(',', $selected_ids), time() + (86400 * 30), "/");
 }
 
-// Fetch selected cities from session
+
 $selected_ids = $_SESSION['selected_cities'];
 
-// Connect to database
 $conn = new mysqli("localhost", "root", "", "aqi");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Prepare and execute query
 $ids_string = implode(",", array_map('intval', $selected_ids));
 $sql = "SELECT * FROM info WHERE id IN ($ids_string)";
 $result = $conn->query($sql);
@@ -37,6 +41,7 @@ $result = $conn->query($sql);
 <head>
     <title>Selected AQI Data</title>
     <style>
+        /* Your existing CSS unchanged */
         body {
             background-color: <?php echo htmlspecialchars($bgColor); ?>;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
