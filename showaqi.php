@@ -1,28 +1,27 @@
 <?php
 session_start();
 
-// Redirect if user not logged in
+
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
     exit;
 }
 
-// If user already selected cities, redirect directly
+
 if (isset($_SESSION['selected_cities']) && !empty($_SESSION['selected_cities'])) {
     header("Location: checkboxrequestedaqi.php");
     exit;
 }
 
-// Use preferred background color or default white
+
 $bgColor = isset($_SESSION['color_preference']) ? $_SESSION['color_preference'] : '#ffffff';
 
-// Connect to database
 $conn = new mysqli("localhost", "root", "", "aqi");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch first 20 cities
+// first 20 cities
 $sql = "SELECT * FROM info LIMIT 20";
 $result = $conn->query($sql);
 
@@ -151,21 +150,21 @@ $result = $conn->query($sql);
             transform: scale(1.3);
         }
         .aqi-high {
-            background-color: #e74c3c; /* Red */
+            background-color: #e74c3c; 
             color: white;
             font-weight: 700;
             border-radius: 5px;
             padding: 6px 12px;
         }
         .aqi-medium {
-            background-color: #f1c40f; /* Yellow */
+            background-color: #f1c40f; 
             color: #222;
             font-weight: 700;
             border-radius: 5px;
             padding: 6px 12px;
         }
         .aqi-normal {
-            background-color: #27ae60; /* Green */
+            background-color: #27ae60; 
             color: white;
             font-weight: 700;
             border-radius: 5px;
@@ -189,7 +188,7 @@ $result = $conn->query($sql);
                 cb.addEventListener("change", toggleCheckboxLimit);
             });
 
-            toggleCheckboxLimit(); // Initialize on load for pre-checked boxes
+            toggleCheckboxLimit(); 
 
             form.addEventListener("submit", function (e) {
                 const checkedCount = document.querySelectorAll('input[type="checkbox"]:checked').length;
@@ -235,7 +234,6 @@ $result = $conn->query($sql);
             </thead>
             <tbody>
                 <?php
-                // Get previously selected city IDs from session (if any)
                 $selectedCities = isset($_SESSION['selected_cities']) ? $_SESSION['selected_cities'] : [];
 
                 if ($result->num_rows > 0) {
@@ -254,7 +252,7 @@ $result = $conn->query($sql);
                             $aqi_class = 'aqi-normal';
                         }
 
-                        // Check if city is previously selected
+                        
                         $checked = in_array($id, $selectedCities) ? "checked" : "";
 
                         echo "<tr>";

@@ -3,14 +3,12 @@ session_start();
 
 $bgColor = isset($_SESSION['color_preference']) ? $_SESSION['color_preference'] : '#ffffff';
 
-// --- NEW: Check cookie if session selected_cities not set or count != 10 ---
 if ((!isset($_SESSION['selected_cities']) || count($_SESSION['selected_cities']) !== 10) && isset($_COOKIE['preferred_cities'])) {
     $cookieCities = json_decode($_COOKIE['preferred_cities'], true);
     if (is_array($cookieCities) && count($cookieCities) === 10) {
         $_SESSION['selected_cities'] = $cookieCities;
     }
 }
-// --- END NEW ---
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cities'])) {
     $selected_ids = $_POST['cities'];
 
@@ -20,7 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cities'])) {
 
     $_SESSION['selected_cities'] = $selected_ids;
 
-    // Set cookie with selected city IDs as comma separated string, expires in 30 days
     setcookie('preferred_cities', implode(',', $selected_ids), time() + (86400 * 30), "/");
 }
 
@@ -41,7 +38,6 @@ $result = $conn->query($sql);
 <head>
     <title>Selected AQI Data</title>
     <style>
-        /* Your existing CSS unchanged */
         body {
             background-color: <?php echo htmlspecialchars($bgColor); ?>;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// DATABASE CONNECTION
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -12,9 +11,8 @@ if ($conn->connect_error) {
     die("<div class='message error'>Database Connection failed: " . $conn->connect_error . "</div>");
 }
 
-// A simple function to show messages with styles
 function showMessage($type, $title, $content = '') {
-    $color = $type === 'error' ? '#e74c3c' : '#27ae60'; // red or green
+    $color = $type === 'error' ? '#e74c3c' : '#27ae60'; 
     $icon = $type === 'error' ? '❌' : '✅';
 
     echo <<<HTML
@@ -23,7 +21,7 @@ function showMessage($type, $title, $content = '') {
         <h2>$title</h2>
         <p>$content</p>
         <a href="index.php" class="btn">Submit</a>
-        <a href="index.php" class="btn cancel-btn">Cancel</a>
+       
     </div>
     HTML;
 }
@@ -31,7 +29,6 @@ function showMessage($type, $title, $content = '') {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $formType = $_POST['formType'];
 
-    // === REGISTRATION FORM ===
     if ($formType === "register") {
         $fullName = htmlspecialchars($_POST['fullName']);
         $email = htmlspecialchars($_POST['email']);
@@ -53,11 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        // Hash password for security (highly recommended)
-        // Removed as per your request (original code kept)
-        // $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
-        // Using plain password as-is (not recommended)
+       
         $passwordHash = $password;
 
         $stmt = $conn->prepare("INSERT INTO user (full_name, email, password, dob, country, gender, color_preference) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -79,7 +72,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $stmt->close();
     }
-    // === LOGIN FORM ===
     elseif ($formType === "login") {
         $email = $_POST['loginEmail'];
         $password = $_POST['loginPassword'];
@@ -93,14 +85,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_result($storedFullName, $storedPasswordHash, $colorPreference);
             $stmt->fetch();
 
-            // Verify hashed password (removed for you)
-            // Just compare plain text password
+            
             if ($password === $storedPasswordHash) {
                 $_SESSION['email'] = $email;
                 $_SESSION['full_name'] = $storedFullName;
                 $_SESSION['color_preference'] = $colorPreference;
 
-                // Check cookie for preferred cities
                 if (isset($_COOKIE['preferred_cities']) && !empty($_COOKIE['preferred_cities'])) {
                     $cookieCities = explode(',', $_COOKIE['preferred_cities']);
                     if (count($cookieCities) === 10) {

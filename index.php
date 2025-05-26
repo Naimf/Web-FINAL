@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Registration and Login</title>
   <style>
-    /* Reset & base */
+    
     * {
       box-sizing: border-box;
     }
@@ -20,7 +20,7 @@
       color: #333;
     }
 
-    /* Header */
+    
     .header {
       display: flex;
       flex-direction: column;
@@ -48,7 +48,7 @@
       text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
-    /* Layout Grid */
+  
     .flexbox {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -65,7 +65,7 @@
       box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     }
 
-    /* Boxes */
+  
     .box {
       background: white;
       border-radius: 15px;
@@ -87,7 +87,7 @@
       box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
     }
 
-    /* Form Titles */
+    
     .box h1 {
       margin-bottom: 25px;
       font-weight: 700;
@@ -97,7 +97,7 @@
       letter-spacing: 0.03em;
     }
 
-    /* Form Styling */
+  
     .form-container {
       display: flex;
       flex-direction: column;
@@ -138,7 +138,7 @@
       cursor: pointer;
     }
 
-    /* Checkbox */
+    
     .checkbox-container {
       display: flex;
       align-items: center;
@@ -153,7 +153,7 @@
       cursor: pointer;
     }
 
-    /* Buttons */
+    
     .submit-btn {
       margin-top: 15px;
       background: linear-gradient(135deg, #00897b, #004d40);
@@ -172,7 +172,7 @@
       box-shadow: 0 8px 25px rgba(0, 77, 64, 0.5);
     }
 
-    /* Table Styling */
+  
     table {
       width: 100%;
       border-collapse: collapse;
@@ -201,7 +201,7 @@
       transition: background-color 0.3s ease;
     }
 
-    /* Responsive tweak */
+    
     @media (max-width: 1100px) {
       .flexbox {
         grid-template-columns: 1fr;
@@ -224,7 +224,6 @@
   </div>
 
   <div class="flexbox">
-    <!-- Registration Box -->
     <div class="box box1">
       <h1>Registration Form</h1>
       <form action="process.php" method="POST">
@@ -271,12 +270,11 @@
             <label for="terms">I agree to the Terms and Conditions</label>
           </div>
           
-          <button type="submit" class="submit-btn">Register</button>
+          <button type="submit" class="submit-btn">Register</button> 
         </div>
       </form>
     </div>
 
-    <!-- Login Box -->
     <div class="box box2">
       <h1>Login Form</h1>
       <form action="process.php" method="POST">
@@ -293,7 +291,6 @@
       </form>
     </div>
 
-    <!-- AQI Table Box -->
     <div class="box box3">
       <table>
         <thead>
